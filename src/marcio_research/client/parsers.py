@@ -5,6 +5,8 @@ import re
 
 from bs4 import BeautifulSoup, Tag
 
+from marcio_research.client.configuration import PortalConfiguration
+from marcio_research.client.public_url import PublicPropertyUrlResolver
 from marcio_research.domain.collections import (
     FacetOptionCollection,
     ListingCollection,
@@ -54,12 +56,21 @@ class PriceTextExtractor:
 class SearchPageParser:
     """Parses search results page into SearchPageResult entity."""
 
-    def parse(self, html: str) -> SearchPageResult:
+    def __init__(self, public_base_url: str | None = None) -> None:
+        """Initialize parser with the configured public portal origin."""
+        configuration = PortalConfiguration()
+        active_base_url = public_base_url or configuration.base_url
+        self._url_resolver = PublicPropertyUrlResolver(active_base_url)
+
+    def parse(
+        self, html: str, public_base_url: str | None = None
+    ) -> SearchPageResult:
         """Extract listings and pagination stats from search HTML."""
         try:
             soup = BeautifulSoup(html, "html.parser")
             stats = self._extract_stats(soup)
-            listings = self._extract_listings(soup)
+            resolver = self._resolver_for(public_base_url)
+            listings = self._extract_listings(soup, resolver)
             has_next = stats["current_page"] < stats["max_pages"]
             return SearchPageResult(
                 listings=ListingCollection(listings),
@@ -72,6 +83,12 @@ class SearchPageParser:
             msg = f"Failed parsing search page HTML: {exc}"
             raise ParserError(msg) from exc
 
+    def _resolver_for(self, public_base_url: str | None) -> PublicPropertyUrlResolver:
+        """Select the instance resolver or an explicitly configured origin."""
+        if public_base_url is None:
+            return self._url_resolver
+        return PublicPropertyUrlResolver(public_base_url)
+
     def _extract_stats(self, soup: BeautifulSoup) -> dict[str, int]:
         """Extract pagination indicators from stats container."""
         stats_el = soup.select_one(".rh_pagination__stats")
@@ -82,17 +99,21 @@ class SearchPageParser:
         tot = int(stats_el.get("data-total-properties", 0))
         return {"current_page": curr, "max_pages": max_p, "total_properties": tot}
 
-    def _extract_listings(self, soup: BeautifulSoup) -> list[RentalListing]:
+    def _extract_listings(
+        self, soup: BeautifulSoup, resolver: PublicPropertyUrlResolver
+    ) -> list[RentalListing]:
         """Extract listing cards from DOM."""
         cards = soup.select("article.rh_prop_card, article.rh_list_card, article")
         results: list[RentalListing] = []
         for card in cards:
-            listing = self._parse_card(card)
+            listing = self._parse_card(card, resolver)
             if listing:
                 results.append(listing)
         return results
 
-    def _parse_card(self, card: Tag) -> RentalListing | None:
+    def _parse_card(
+        self, card: Tag, resolver: PublicPropertyUrlResolver
+    ) -> RentalListing | None:
         """Parse individual property card element."""
         title_el = card.select_one("h3 a, .rh_prop_card__title a, .rh_list_card__title a")
         if not title_el:
@@ -111,11 +132,13 @@ class SearchPageParser:
 
         thumb = self._extract_thumbnail(card)
         code_str = self._extract_code(card, url)
+        property_code = PropertyCode(code_str)
+        public_url = resolver.resolve(url, property_code)
 
         return RentalListing(
             title=title,
-            property_code=PropertyCode(code_str),
-            url=url,
+            property_code=property_code,
+            url=public_url,
             price=price,
             bedrooms=bedrooms,
             bathrooms=bathrooms,

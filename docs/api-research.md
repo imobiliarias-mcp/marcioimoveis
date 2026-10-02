@@ -148,12 +148,14 @@ Search result cards are rendered inside `.rh_page__listing` as `<article class="
 | Field | Primary CSS Selector | Fallback / Processing |
 | :--- | :--- | :--- |
 | `title` | `h3 a`, `.rh_prop_card__title a` | `element.text.strip()` |
-| `url` | `h3 a[href]`, `.rh_prop_card__title a[href]` | Normalized URL string |
+| `url` | `h3 a[href]`, `.rh_prop_card__title a[href]` | Absolute public URL resolved against the configured website base; known property-detail routes on the same host only |
 | `price` | `.rh_prop_card__price`, `.price` | `PriceTextExtractor` (handles `R$1,150` format) |
 | `bedrooms` | `.rh_prop_card__meta` matching `Quartos?\s*(\d+)` | Integer value |
 | `bathrooms` | `.rh_prop_card__meta` matching `Banheiros?\s*(\d+)` | Integer value |
 | `thumbnail` | `figure img[src]`, `.post_thumbnail[style]` | URL from `src` or CSS `background-image` |
 | `property_code` | `post-{id}` class or slug from `url` | `PropertyCode` value object |
+
+The search parsers resolve absolute, relative, and protocol-relative property links against the configured public website base in both `src/` and `scripts/`. They accept the documented `/imovel/{slug}/` detail route and the existing `/propriedade/{slug}/` route, while rejecting search paths such as `/imoveis/` and image assets. A missing card link uses the documented WordPress lookup (`/?post_type=property&p={numeric_id}`) only when the card exposes a numeric property code; otherwise parsing fails with card context. The Glue/API listing ID is not used to fabricate a public route, and search does not issue a second detail request. The existing serialized `url` key contains the resolved URL.
 
 ---
 

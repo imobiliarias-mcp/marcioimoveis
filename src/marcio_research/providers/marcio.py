@@ -55,7 +55,9 @@ class MarcioRentalProvider(RentalProviderProtocol):
         """Execute rental search against the portal."""
         url = self._query_builder.build_search_url(criteria)
         response = self._transport.get(url)
-        return self._search_parser.parse(response.body)
+        return self._search_parser.parse(
+            response.body, public_base_url=self._config.base_url
+        )
 
     def get_property_detail(self, property_code: PropertyCode) -> PropertyDetail:
         """Fetch property details resolving code or direct slug."""
