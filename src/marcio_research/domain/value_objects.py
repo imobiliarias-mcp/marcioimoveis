@@ -1,7 +1,7 @@
 """Domain value objects enforcing validation and encapsulation."""
 
-from dataclasses import dataclass
 import re
+from dataclasses import dataclass
 
 from marcio_research.domain.exceptions import InvalidFilterError
 
@@ -48,7 +48,7 @@ class ListingPrice:
 
     def to_integer(self) -> int:
         """Return rounded integer representation."""
-        return int(round(self.amount))
+        return round(self.amount)
 
     def __str__(self) -> str:
         return self.format_brl()

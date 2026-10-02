@@ -8,7 +8,6 @@ from scripts.client.parsers import FacetParser, PropertyDetailParser, SearchPage
 from scripts.client.query_builder import SearchQueryBuilder
 from scripts.domain.criteria import RentalFilter
 from scripts.domain.entities import FacetCatalog, PropertyDetail, SearchPageResult
-from scripts.domain.exceptions import PropertyNotFoundError
 from scripts.domain.value_objects import PropertyCode
 from scripts.interfaces.provider import RentalProviderProtocol
 

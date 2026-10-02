@@ -2,9 +2,14 @@
 
 import json
 import re
+
 from bs4 import BeautifulSoup, Tag
 
-from marcio_research.domain.collections import FacetOptionCollection, ListingCollection, PhotoCollection
+from marcio_research.domain.collections import (
+    FacetOptionCollection,
+    ListingCollection,
+    PhotoCollection,
+)
 from marcio_research.domain.entities import (
     FacetCatalog,
     FacetOption,
@@ -148,7 +153,7 @@ class SearchPageParser:
     def _extract_int(self, items: list[str], pattern: str) -> int:
         """Extract numeric value matching regex pattern across strings."""
         for item in items:
-            m = re.search(pattern, item, re.I)
+            m = re.search(pattern, item, re.IGNORECASE)
             if m:
                 return int(m.group(1))
         return 0
@@ -205,7 +210,7 @@ class PropertyDetailParser:
     def _extract_code(self, soup: BeautifulSoup, url: str) -> str:
         """Extract property reference code (e.g. RH-17772)."""
         text = soup.get_text()
-        m = re.search(r"Cod\.\s*do\s*Im[oó]vel\s*:\s*([A-Za-z0-9_-]+)", text, re.I)
+        m = re.search(r"Cod\.\s*do\s*Im[oó]vel\s*:\s*([A-Za-z0-9_-]+)", text, re.IGNORECASE)
         if m:
             return m.group(1).strip()
         slug_match = re.search(r"/imovel/([^/]+)/?", url)
@@ -248,7 +253,7 @@ class PropertyDetailParser:
                 data = json.loads(m)
                 if "lat" in data and "lng" in data:
                     return data
-            except Exception:
+            except (json.JSONDecodeError, TypeError, KeyError):
                 continue
         return {}
 
@@ -256,13 +261,13 @@ class PropertyDetailParser:
         """Extract bedrooms, bathrooms, and garages from specs rows."""
         specs = {"bedrooms": 0, "bathrooms": 0, "garages": 0, "status": "Para Alugar", "property_type": "Imóvel"}
         text = soup.get_text()
-        bed_m = re.search(r"Quartos?\s*[:\n\r]*\s*(\d+)", text, re.I)
+        bed_m = re.search(r"Quartos?\s*[:\n\r]*\s*(\d+)", text, re.IGNORECASE)
         if bed_m:
             specs["bedrooms"] = int(bed_m.group(1))
-        bath_m = re.search(r"Banheiros?\s*[:\n\r]*\s*(\d+)", text, re.I)
+        bath_m = re.search(r"Banheiros?\s*[:\n\r]*\s*(\d+)", text, re.IGNORECASE)
         if bath_m:
             specs["bathrooms"] = int(bath_m.group(1))
-        gar_m = re.search(r"Garag(?:em|ens)?\s*[:\n\r]*\s*(\d+)", text, re.I)
+        gar_m = re.search(r"Garag(?:em|ens)?\s*[:\n\r]*\s*(\d+)", text, re.IGNORECASE)
         if gar_m:
             specs["garages"] = int(gar_m.group(1))
         # Status / Type from breadcrumbs

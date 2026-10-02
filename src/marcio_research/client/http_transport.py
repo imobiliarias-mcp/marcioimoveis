@@ -1,11 +1,11 @@
 """Resilient HTTP transport layer using standard library with error handling."""
 
-from dataclasses import dataclass
 import ssl
-from typing import Protocol
 import urllib.error
 import urllib.parse
 import urllib.request
+from dataclasses import dataclass
+from typing import Protocol
 
 from marcio_research.client.configuration import PortalConfiguration
 from marcio_research.domain.exceptions import HttpTransportError

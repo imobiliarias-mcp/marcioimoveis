@@ -1,6 +1,7 @@
 """First-class collections encapsulating domain entity aggregates."""
 
-from typing import TYPE_CHECKING, Iterator
+from collections.abc import Iterator
+from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from marcio_research.domain.entities import FacetOption, RentalListing

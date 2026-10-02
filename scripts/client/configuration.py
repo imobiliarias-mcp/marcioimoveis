@@ -1,6 +1,6 @@
 """Configuration settings for Márcio Imóveis portal HTTP interactions."""
 
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 
 
 @dataclass(frozen=True)

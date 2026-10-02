@@ -4,11 +4,18 @@ import json
 
 from marcio_research.client.configuration import PortalConfiguration
 from marcio_research.client.http_transport import HttpTransportProtocol, UrllibTransport
-from marcio_research.client.parsers import FacetParser, PropertyDetailParser, SearchPageParser
+from marcio_research.client.parsers import (
+    FacetParser,
+    PropertyDetailParser,
+    SearchPageParser,
+)
 from marcio_research.client.query_builder import SearchQueryBuilder
 from marcio_research.domain.criteria import RentalFilter
-from marcio_research.domain.entities import FacetCatalog, PropertyDetail, SearchPageResult
-from marcio_research.domain.exceptions import PropertyNotFoundError
+from marcio_research.domain.entities import (
+    FacetCatalog,
+    PropertyDetail,
+    SearchPageResult,
+)
 from marcio_research.domain.value_objects import PropertyCode
 from marcio_research.interfaces.provider import RentalProviderProtocol
 

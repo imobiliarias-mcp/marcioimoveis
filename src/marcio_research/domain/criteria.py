@@ -3,7 +3,12 @@
 from dataclasses import dataclass, field
 
 from marcio_research.domain.exceptions import InvalidFilterError
-from marcio_research.domain.value_objects import ListingPrice, LocationSlug, PropertyCode, RoomCount
+from marcio_research.domain.value_objects import (
+    ListingPrice,
+    LocationSlug,
+    PropertyCode,
+    RoomCount,
+)
 
 
 @dataclass(frozen=True)

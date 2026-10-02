@@ -2,7 +2,11 @@
 
 from dataclasses import dataclass, field
 
-from marcio_research.domain.collections import FacetOptionCollection, ListingCollection, PhotoCollection
+from marcio_research.domain.collections import (
+    FacetOptionCollection,
+    ListingCollection,
+    PhotoCollection,
+)
 from marcio_research.domain.value_objects import ListingPrice, PropertyCode
 
 

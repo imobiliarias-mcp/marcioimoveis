@@ -3,7 +3,12 @@
 from dataclasses import dataclass, field
 
 from scripts.domain.exceptions import InvalidFilterError
-from scripts.domain.value_objects import ListingPrice, LocationSlug, PropertyCode, RoomCount
+from scripts.domain.value_objects import (
+    ListingPrice,
+    LocationSlug,
+    PropertyCode,
+    RoomCount,
+)
 
 
 @dataclass(frozen=True)

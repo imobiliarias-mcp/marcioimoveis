@@ -2,7 +2,11 @@
 
 from dataclasses import dataclass, field
 
-from scripts.domain.collections import FacetOptionCollection, ListingCollection, PhotoCollection
+from scripts.domain.collections import (
+    FacetOptionCollection,
+    ListingCollection,
+    PhotoCollection,
+)
 from scripts.domain.value_objects import ListingPrice, PropertyCode
 
 

@@ -3,17 +3,21 @@
 
 import sys
 from pathlib import Path
+
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 import unittest
 
 from scripts.client.configuration import PortalConfiguration
 from scripts.client.parsers import PriceTextExtractor, SearchPageParser
 from scripts.client.query_builder import SearchQueryBuilder
-from scripts.domain.collections import ListingCollection, PhotoCollection
 from scripts.domain.criteria import RentalFilter
-from scripts.domain.entities import RentalListing
 from scripts.domain.exceptions import InvalidFilterError
-from scripts.domain.value_objects import ListingPrice, LocationSlug, PropertyCode, RoomCount
+from scripts.domain.value_objects import (
+    ListingPrice,
+    LocationSlug,
+    PropertyCode,
+    RoomCount,
+)
 from scripts.mcp.tools import MarcioMcpAdapter
 
 

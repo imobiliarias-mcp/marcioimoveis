@@ -3,7 +3,11 @@
 from typing import Protocol
 
 from marcio_research.domain.criteria import RentalFilter
-from marcio_research.domain.entities import FacetCatalog, PropertyDetail, SearchPageResult
+from marcio_research.domain.entities import (
+    FacetCatalog,
+    PropertyDetail,
+    SearchPageResult,
+)
 from marcio_research.domain.value_objects import PropertyCode
 
 
