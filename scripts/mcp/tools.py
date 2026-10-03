@@ -106,3 +106,13 @@ class MarcioMcpAdapter:
             base_filter, min_price, max_price, bedrooms, bathrooms, "", "default"
         )
         return self._provider.search_map_rentals(criteria)
+
+    def get_provider_info(self) -> dict:
+        """Retrieve metadata about this rental provider adapter."""
+        name = self._provider.provider_name()
+        return {
+            "provider_name": name,
+            "coverage_region": "Timóteo, Coronel Fabriciano, Ipatinga e Vale do Aço",
+            "supported_operations": ["search_rentals", "get_property_detail", "get_facets"],
+        }
+
