@@ -1,3 +1,4 @@
+import re
 """Concrete rental search provider for Márcio Imóveis."""
 
 import json
@@ -19,6 +20,8 @@ from marcio_research.domain.entities import (
 from marcio_research.domain.value_objects import PropertyCode
 from marcio_research.interfaces.provider import RentalProviderProtocol
 
+
+NUMERIC_CODE_PATTERN = re.compile(r"(?i)(?:rh-)?\d+")
 
 class MarcioRentalProvider(RentalProviderProtocol):
     """Integrates transport, query builder, and parsers into domain operations."""
@@ -67,6 +70,8 @@ class MarcioRentalProvider(RentalProviderProtocol):
             target_url = code_str
         elif "/" in code_str:
             target_url = f"{self._config.base_url.rstrip('/')}/{code_str.strip('/')}/"
+        elif not NUMERIC_CODE_PATTERN.fullmatch(code_str):
+            target_url = f"{self._config.base_url.rstrip('/')}/imovel/{code_str}/"
         else:
             # First attempt: search by property ID to locate exact listing URL
             target_url = self._resolve_property_url(code_str)
